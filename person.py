@@ -6,7 +6,7 @@ class Person:
     def get_name(self):
         return self.name
 
-    def get_mail(self):
+    def get_email(self):
         return self.email
 
     def __str__(self):
