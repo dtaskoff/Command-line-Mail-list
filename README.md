@@ -7,7 +7,7 @@ class person:
 - name
 - mail
 - get_name method (both return
-- get_mail method  a string)
+- get_email method  a string)
 
 - constructor (__init__)
 - to string method (__str__)
