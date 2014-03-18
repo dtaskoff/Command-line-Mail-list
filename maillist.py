@@ -28,12 +28,12 @@ class MailList():
             [person_ for person_ in other_list.people if person_ not in self.people]
 
     def export_to_json(self):
-        file_ = open(self.list_name, "w")
+        file_ = open("%s.json"%self.list_name, "w")
         file_.write("[\n")
 
         for person_ in self.people:
-            file_.write("\t{\n\t\t\"name\" : \"%s\",\n"%person_.get_name)
-            file_.write("\t\t\"email\" : \"%s\""%person_.get_email)
+            file_.write("\t{\n\t\t\"name\" : \"%s\",\n"%person_.get_name())
+            file_.write("\t\t\"email\" : \"%s\"\n"%person_.get_email())
             file_.write("\t},\n")
 
         file_.write("]")
