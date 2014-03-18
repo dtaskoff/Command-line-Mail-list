@@ -24,11 +24,16 @@ class Interface:
     def error(self):
         return "Unknow command! Please try again!"
 
-    def show_list(self):
+    # all lists will be held in a directory called ./lists
+    # example: Hack Bulgaria will be stored as ./lists/Hack%20Bulgaria
 
-    def show_lists(self):
+    # def _load(self):
+     
+    # def show_list(self):
 
-    def add(self):
+    # def show_lists(self):
+
+    # def add(self):
 
     def create(slef):
 
