@@ -11,6 +11,7 @@ class MailList():
         id_ = 1
         for _person in self.people:
             string += "[%d] %s\n"%(id_, str(_person))
+            id_ += 1
         return string
 
     def add_person(self, person_):
