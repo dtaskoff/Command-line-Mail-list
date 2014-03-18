@@ -13,7 +13,7 @@ class PersonTests(unittest.TestCase):
         self.assertEqual("test@emaildomain.com", self.p.get_email())
 
     def test_tostring(self):
-        self.assertEqual("Testov User - test@emaildomain.com", print(self.p))
+        self.assertEqual("Testov User - test@emaildomain.com", str(self.p))
 
 if __name__ == '__main__':
     unittest.main()
