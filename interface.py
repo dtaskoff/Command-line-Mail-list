@@ -21,6 +21,8 @@ class Interface:
                 "* export <unique_list_identifier> - Exports the given list into JSON file, named just like the list. All white spaces are replaced by underscores.",
                 "* exit - this will quit the program"]
         return "\n".join(menu)
+    def error(self):
+        return "Unknow command! Please try again!"
 
     def show_list(self):
 
