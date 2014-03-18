@@ -5,7 +5,9 @@ Our repo for the Hack Bulgaria's project
 
 class person:
 - name
-- identifier
+- mail
+- get_name method (both return
+- get_mail method  a string)
 
 - constructor (__init__)
 - to string method (__str__)
