@@ -40,13 +40,14 @@ class TestMailList(unittest.TestCase):
         self.ml.add_person(p)
         self.ml.export_to_json()
 
-        file_.open("test_list.json", "r")
+        file_ = open("test_list.json", "r")
         contents = file_.read()
         file_.close()
         call("rm -r test_list.json", shell = True)
 
-        self.assertEqual("[\n\t{\n\t\t\"second testeroff\" : "\
-                + "\"testeroff@test.bug\"\n\t},\n]", contents)
+        self.assertEqual("[\n\t{\n\t\t\"name\" : "\
+                + "\"second testeroff\",\n"\
+                + "\t\t\"email\" : \"testeroff@test.bug\"\n\t},\n]", contents)
 
 
 if __name__ == '__main__':
