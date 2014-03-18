@@ -37,7 +37,7 @@ class Interface:
 
     def create(slef):
 
-    def search_email(slef):
+    def search_email(slef, email):
 
     def merge_lists(self):
 
