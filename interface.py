@@ -68,10 +68,14 @@ class Interface:
         return "A person with the given mail already exists!"
 
     def create(self, list_name):
-        pass
+        self.mail_lists.append(list_name)
 
-    def search_email(self, email):
-        pass
+    def search_email(self, search_email):
+        for maillist in self.mail_lists:
+            for person in maillist:
+                if person.email == search_email:
+                    return "{0} was found in {1}".format(str(person), str(maillist))
+        return "{0} was not found in the current mailing lists.".format(search_email)
 
     #def merge_lists(self, list_1, list_2):
     #    pass
@@ -80,13 +84,13 @@ class Interface:
     #   pass
 
     def delete(self, list_id):  # Delete list
-        pass
+        del self.mail_lists[list_id-1]
 
     #def remove_subscriber(self, list_id, subscriber): # Remove subscriber from list
     #    pass
 
     def update(self, list_id, new_name): #Receive list indetifier and change list's name
-        pass
+        self.mail_lists[list_id-1].list_name = new_name
 
     #def update_subscriber(self, list_id, subscriber): # update name and email
     #    pass
