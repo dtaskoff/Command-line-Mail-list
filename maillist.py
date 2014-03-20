@@ -21,7 +21,7 @@ class MailList():
 
     def has_person_with_mail(self, email):
         for person_ in self.people:
-            if person_.email == email:
+            if person_.get_email() == email:
                 return True
         return False
 

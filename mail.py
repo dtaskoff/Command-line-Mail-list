@@ -18,7 +18,9 @@ def main():
         elif command == 'exit':
             main_interface.exit()
         elif len(commands) < 2:
-            print(main_interface.error()))
+            print(main_interface.error())
+        elif command == 'delete':
+            print(main_interface.delete(commands[1]))
         elif command == 'show_list':
             print(main_interface.show_list(commands[1]))
         elif command == 'add':

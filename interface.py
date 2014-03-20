@@ -23,6 +23,7 @@ class Interface:
                 "* create <list_name> - Creates a new empty list, with the given name.",
                 "* search_email <email> - Performs a search into all lists to see if the given email is present. Shows all lists, where the email was found.",
                 "* merge_lists <list_identifier_1> <list_identifier_2> <new_list_name> - merges list1 and list2 into a new list, with the given name.",
+                "* delete <list_identifier> - deletes the entire list"
                 "* export <unique_list_identifier> - Exports the given list into JSON file, named just like the list. All white spaces are replaced by underscores.",
                 "* exit - this will quit the program"]
 
@@ -38,7 +39,7 @@ class Interface:
         files = glob.glob("./lists/*")
 
         for filename in files:
-            maillist = MailList(filename)
+            maillist = MailList(filename[8:])
             file_ = open(filename, "r")
             contents = file_.read()
             file_.close()
@@ -53,7 +54,7 @@ class Interface:
     def show_lists(self):
         string = ""
         for index in range(len(self.mail_lists)):
-            string += "[%d] %s"%(index + 1, self.mail_lists[index].list_name)
+            string += "[%d] %s\n"%(index + 1, str(self.mail_lists[index].list_name))
 
         return string
 
@@ -68,38 +69,46 @@ class Interface:
         return "A person with the given mail already exists!"
 
     def create(self, list_name):
-        self.mail_lists.append(list_name)
+        self.mail_lists.append(MailList(list_name))
+        return "New list <%s> was created!" % list_name
 
-    def search_email(self, search_email):
-        for maillist in self.mail_lists:
-            for person in maillist:
-                if person.email == search_email:
-                    return "{0} was found in {1}".format(str(person), str(maillist))
-        return "{0} was not found in the current mailing lists.".format(search_email)
+    def search_email(self, email):
+        result = [list_ for list_ in self.mail_lists if list_.has_person_with_mail(email)]
+        if len(result) == 0:
+            return "{0} was not found in the current mailing lists.".format(email)
+            
+        result, self.mail_lists = self.mail_lists, result
+        string_ =  "{0} was found in \n{1}".format("<%s>" % email, self.show_lists())
+        result, self.mail_lists = self.mail_lists, result
+        return string_
+    
 
-    def merge_lists(self, list_identifier1, list_identifier2, list_name):
-        new_maillist = maillist.MailList(list_name)
-        new_maillist.merge_with(self.mail_lists[int(list_identifier1)])
-        new_maillist.merge_with(self.mail_lists[int(list_indentifier2)])
+    def merge_lists(self, list_identifier_1, list_identifier_2, list_name):
+        new_maillist = MailList(list_name)
+        new_maillist.merge_with(self.mail_lists[int(list_identifier_1)])
+        new_maillist.merge_with(self.mail_lists[int(list_identifier_2)])
         self.mail_lists.append(new_maillist)
+        return "New list <%s> was created!" % list_name
 
     def export(self, list_identifier):
-        list_ = self.mail_lists[int(list_identifier)]
+        list_ = self.mail_lists[int(list_identifier) - 1]
         list_name = list_.list_name
-        file_ = open("%s.json" % list_name)
+        file_ = open("%s.json" % list_name, "w")
         file_.write(list_.export_to_json())
         file_.close()
+        return "The list <%s> was exported to json format" % list_name
 
-
-    def delete(self, list_id):  # Delete list
-        del self.mail_lists[list_id-1]
+    def delete(self, list_identifier):
+        name = self.mail_lists[int(list_identifier) - 1].list_name
+        del self.mail_lists[int(list_identifier) - 1]
+        return "The list <%s> was deleted!" % name
 
     def remove_subscriber(self, list_identifier, subscriber_identifier):
         self.mail_lists[int(list_identifier) - 1].\
-            remove_person(int(subscriber_identifier)
+            remove_person(int(subscriber_identifier))
 
-    def update(self, list_id, new_name): #Receive list indetifier and change list's name
-        self.mail_lists[list_id-1].list_name = new_name
+    def update(self, list_identifier, new_name):
+        self.mail_lists[list_identifier - 1].list_name = new_name
 
     #def update_subscriber(self, list_id, subscriber): # update name and email
     #    pass
