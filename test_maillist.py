@@ -24,6 +24,12 @@ class TestMailList(unittest.TestCase):
         self.ml.add_person(p)
         self.assertEqual([p], self.ml.people)
 
+    def test_remove_person(self):
+        p = person.Person("test personoff", "personoff@test.bug")
+        self.ml.add_person(p)
+        self.ml.remove_person(1)
+        self.assertEqual([], self.ml.people)
+
     def test_has_person_with_mail(self):
         p = person.Person("test personoff", "personoff@test.bug")
         self.ml.add_person(p)
@@ -39,15 +45,11 @@ class TestMailList(unittest.TestCase):
     def test_export_to_json(self):
         p = person.Person("second testeroff", "testeroff@test.bug")
         self.ml.add_person(p)
-        self.ml.export_to_json()
+        expected = self.ml.export_to_json()
 
-        file_ = open("test_list.json", "r")
-        contents = file_.read()
-        file_.close()
-        call("rm -r test_list.json", shell = True)
-
-        self.assertEqual(json.dumps({"name" : "second testeroff",
-                                "email" : "testeroff@test.bug"}, indent = 4), contents)
+        self.assertEqual(json.dumps([{"name" : "second testeroff",
+                                    "email" : "testeroff@test.bug"}], indent = 4),
+            expected)
 
 
 if __name__ == '__main__':

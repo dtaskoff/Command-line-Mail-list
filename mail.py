@@ -18,7 +18,7 @@ def main():
         elif command == 'exit':
             main_interface.exit()
         elif len(commands) < 2:
-            print(main_interface.error())
+            print(main_interface.error()))
         elif command == 'show_list':
             print(main_interface.show_list(commands[1]))
         elif command == 'add':
@@ -29,6 +29,10 @@ def main():
             print(main_interface.search_email(commands[1]))
         elif command == 'create':
             print(main_interface.create(commands[1]))
+        elif len(commands) < 3:
+            print(main_interface.error())
+        elif command == 'remove_subscriber':
+            print(main_interface.remove_subscriber(commands[1], commands[2]))
         elif len(commands) < 4:
             print(main_interface.error())
         elif command == 'merge_lists':
