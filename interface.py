@@ -64,7 +64,7 @@ class Interface:
         if not self.mail_lists[int(unique_list_identifier) - 1].\
                 has_person_with_mail(email):
             self.mail_lists[int(unique_list_identifier) - 1].add_person(new_person)
-            return "%s was added to the list"%str(new_person) 
+            return "%s was added to the list" % str(new_person) 
         return "A person with the given mail already exists!"
 
     def create(self, list_name):
@@ -77,17 +77,26 @@ class Interface:
                     return "{0} was found in {1}".format(str(person), str(maillist))
         return "{0} was not found in the current mailing lists.".format(search_email)
 
-    #def merge_lists(self, list_1, list_2):
-    #    pass
+    def merge_lists(self, list_identifier1, list_identifier2, list_name):
+        new_maillist = maillist.MailList(list_name)
+        new_maillist.merge_with(self.mail_lists[int(list_identifier1)])
+        new_maillist.merge_with(self.mail_lists[int(list_indentifier2)])
+        self.mail_lists.append(new_maillist)
 
-    #def export(self, list_id):
-    #   pass
+    def export(self, list_identifier):
+        list_ = self.mail_lists[int(list_identifier)]
+        list_name = list_.list_name
+        file_ = open("%s.json" % list_name)
+        file_.write(list_.export_to_json())
+        file_.close()
+
 
     def delete(self, list_id):  # Delete list
         del self.mail_lists[list_id-1]
 
-    #def remove_subscriber(self, list_id, subscriber): # Remove subscriber from list
-    #    pass
+    def remove_subscriber(self, list_identifier, subscriber_identifier):
+        self.mail_lists[int(list_identifier) - 1].\
+            remove_person(int(subscriber_identifier)
 
     def update(self, list_id, new_name): #Receive list indetifier and change list's name
         self.mail_lists[list_id-1].list_name = new_name
