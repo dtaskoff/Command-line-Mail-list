@@ -1,4 +1,5 @@
 import person
+import json
 
 
 class MailList():
@@ -30,12 +31,8 @@ class MailList():
 
     def export_to_json(self):
         file_ = open("%s.json"%self.list_name, "w")
-        file_.write("[\n")
 
         for person_ in self.people:
-            file_.write("\t{\n\t\t\"name\" : \"%s\",\n"%person_.get_name())
-            file_.write("\t\t\"email\" : \"%s\"\n"%person_.get_email())
-            file_.write("\t},\n")
-
-        file_.write("]")
+            file_.write(json.dumps({"name" : person_.get_name(),
+                                    "email" : person_.get_email()}, indent = 4))
         file_.close()

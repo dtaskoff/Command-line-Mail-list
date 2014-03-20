@@ -1,6 +1,7 @@
 import unittest
 import person
 import maillist
+import json
 from subprocess import call
 
 
@@ -45,9 +46,8 @@ class TestMailList(unittest.TestCase):
         file_.close()
         call("rm -r test_list.json", shell = True)
 
-        self.assertEqual("[\n\t{\n\t\t\"name\" : "\
-                + "\"second testeroff\",\n"\
-                + "\t\t\"email\" : \"testeroff@test.bug\"\n\t},\n]", contents)
+        self.assertEqual(json.dumps({"name" : "second testeroff",
+                                "email" : "testeroff@test.bug"}, indent = 4), contents)
 
 
 if __name__ == '__main__':
