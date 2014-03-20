@@ -25,14 +25,18 @@ class MailList():
                 return True
         return False
 
+    def remove_person(self, index_of_person):
+        del self.people[index_of_person - 1]
+
     def merge_with(self, other_list):
         self.people +=\
             [person_ for person_ in other_list.people if person_ not in self.people]
 
     def export_to_json(self):
-        file_ = open("%s.json"%self.list_name, "w")
+        json_dump_list = []
 
         for person_ in self.people:
-            file_.write(json.dumps({"name" : person_.get_name(),
-                                    "email" : person_.get_email()}, indent = 4))
-        file_.close()
+            json_dump_list.append({"name" : person_.get_name(),
+                                    "email" : person_.get_email()})
+        
+        return json.dumps(json_dump_list, indent = 4)
