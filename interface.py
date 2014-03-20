@@ -67,15 +67,31 @@ class Interface:
             return "%s was added to the list"%str(new_person) 
         return "A person with the given mail already exists!"
 
-    def create(self):
+    def create(self, list_name):
         pass
 
-    def search_email(self):
-        pass
-    def merge_lists(self):
+    def search_email(self, email):
         pass
 
-    def export(self):
+    def merge_lists(self, list_1, list_2):
+        pass
+
+    def export(self, list_id):
+        pass
+
+    def delete(self, list_id):  # Delete list
+        pass
+
+    def remove_subscriber(self, list_id, subscriber): # Remove subscriber from list
+        pass
+
+    def update(self, list_id, new_name): #Receive list indetifier and change list's name
+        pass
+
+    def update_subscriber(self, list_id, subscriber): # update name and email
+        pass
+
+    def import_json(self, filename):
         pass
 
     def exit(self):
