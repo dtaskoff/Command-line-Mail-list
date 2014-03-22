@@ -25,14 +25,20 @@ def main():
             print(main_interface.show_list(commands[1]))
         elif command == 'add':
             print(main_interface.add(commands[1]))
-        elif command == 'export':
-            print(main_interface.export(commands[1]))
-        elif command == 'search_email':
-            print(main_interface.search_email(commands[1]))
         elif command == 'create':
             print(main_interface.create(commands[1]))
+        elif command == 'delete':
+            print(main_interface.delete(commands[1]))
+        elif command == 'search_email':
+            print(main_interface.search_email(commands[1]))
+        elif command == 'export':
+            print(main_interface.export(commands[1]))
+        elif command == 'import':
+            print(main_interface.import_(commands[1]))
         elif len(commands) < 3:
             print(main_interface.error())
+        elif command == 'update_subscriber':
+            print(main_interface.update_subscriber(commands[1], commands[2]))
         elif command == 'remove_subscriber':
             print(main_interface.remove_subscriber(commands[1], commands[2]))
         elif len(commands) < 4:
