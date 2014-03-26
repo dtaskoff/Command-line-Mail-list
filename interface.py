@@ -109,14 +109,13 @@ class Interface():
             subscriber.email = email
 
         update_query = '''update {0}
-            set name = '{1}', email = '{2}'
-            where name = '{3}' '''\
-                .format(self.mail_lists[list_index].list_name,
-                                            subscriber.name,
-                                            subscriber.email,
-                                            old_name)
+            set name = ?, email = ?
+            where name = ? '''\
+                .format(self.mail_lists[list_index].list_name)
 
-        self.cursor.execute(update_query)
+        self.cursor.execute(update_query, (subscriber.name,
+                                            subscriber.email,
+                                            old_name))
 
         return "Subscriber update: {0}".format(subscriber)
 
@@ -134,8 +133,8 @@ class Interface():
         subscriber = self.mail_lists[list_index].people[subscriber_index].name
         self.mail_lists[list_index].remove_person(subscriber_index)
 
-        delete_query = "delete from {0} where name = '{1}'".format(list_name, subscriber)
-        self.cursor.execute(delete_query)
+        delete_query = "delete from {0} where name = ?".format(list_name)
+        self.cursor.execute(delete_query, subscriber)
 
         return "Subscriber {0} deleted from {1}".format(subscriber, list_name)
 
