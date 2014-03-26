@@ -1,8 +1,11 @@
 import interface
+import sqlite3
 
 
 def main():
-    main_interface = interface.Interface()
+    conn = sqlite3.connect("lists.db")
+    cursor = conn.cursor()
+    main_interface = interface.Interface(cursor)
 
     while True:
         commands = input(">")
@@ -16,19 +19,24 @@ def main():
         elif command == 'show_lists':
             print(main_interface.show_lists())
         elif command == 'exit':
+            conn.close()
             main_interface.exit()
         elif len(commands) < 2:
             print(main_interface.error())
         elif command == 'delete':
             print(main_interface.delete(commands[1]))
+            conn.commit()
         elif command == 'show_list':
             print(main_interface.show_list(commands[1]))
         elif command == 'add':
             print(main_interface.add(commands[1]))
+            conn.commit()
         elif command == 'create':
             print(main_interface.create(commands[1]))
+            conn.commit()
         elif command == 'delete':
             print(main_interface.delete(commands[1]))
+            conn.commit()
         elif command == 'search_email':
             print(main_interface.search_email(commands[1]))
         elif command == 'export':
@@ -37,10 +45,15 @@ def main():
             print(main_interface.import_(commands[1]))
         elif len(commands) < 3:
             print(main_interface.error())
+        elif command == 'update':
+            print(main_interface.update(commands[1], commands[2]))
+            conn.commit()
         elif command == 'update_subscriber':
             print(main_interface.update_subscriber(commands[1], commands[2]))
+            conn.commit()
         elif command == 'remove_subscriber':
             print(main_interface.remove_subscriber(commands[1], commands[2]))
+            conn.commit()
         elif len(commands) < 4:
             print(main_interface.error())
         elif command == 'merge_lists':

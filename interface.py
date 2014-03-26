@@ -3,8 +3,11 @@ import glob
 import person
 
 
+# the class we use for the communication between the user and the database
+# it's indeed a simple CLUI
 class Interface():
-    def __init__(self):
+    def __init__(self, cursor):
+        self.cursor = cursor
         self.mail_lists = []
         self._load()
 
@@ -37,18 +40,15 @@ class Interface():
     def error(self):
         return "Unknown command! Enter 'help' for more information."
 
+    # loads all database files in the directory lists into the current interface
     def _load(self):
-        files = glob.glob("./lists/*")
+        to_load = self.cursor.execute("select name from sqlite_master").fetchall()
+        for name in to_load:
+            maillist_ = maillist.MailList(name[0])
+            select_query = "select name, email from " + name[0]
+            for entry in self.cursor.execute(select_query):
+                maillist_.add_person(person.Person(entry[0], entry[1]))
 
-        for filename in files:
-            maillist_ = maillist.MailList(filename[8:])
-            file_ = open(filename, "r")
-            contents = file_.read()
-            file_.close()
-            contents = contents.splitlines()
-
-            for line in contents:
-                maillist_.add_person(person.Person(line.split(":")[0], line.split(":")[1]))
             self.mail_lists.append(maillist_)
 
 
@@ -74,9 +74,14 @@ class Interface():
         new_person = person.Person(name, email)
         if not self.mail_lists[index].has_person_with_email(email):
             self.mail_lists[index].add_person(new_person)
+            insert_query = "insert into {0} values(?, ?)"\
+                .format(self.mail_lists[index].list_name)
+            self.cursor.execute(insert_query, (name, email))
+
             return "{0} was added to the list".format(str(new_person))
 
-        return "A person with the given email <{0}> already exists!".format(email)
+        return "A person with the given email <{0}> already exists!"\
+                .format(email)
 
 
     def update_subscriber(self, unique_list_identifier, unique_name_identifier):
@@ -96,11 +101,22 @@ class Interface():
 
         name = input("new name>")
         email = input("new email>")
+        old_name = subscriber.name
 
         if len(name) > 0:
             subscriber.name = name
         if len(email) > 0:
             subscriber.email = email
+
+        update_query = '''update {0}
+            set name = '{1}', email = '{2}'
+            where name = '{3}' '''\
+                .format(self.mail_lists[list_index].list_name,
+                                            subscriber.name,
+                                            subscriber.email,
+                                            old_name)
+
+        self.cursor.execute(update_query)
 
         return "Subscriber update: {0}".format(subscriber)
 
@@ -111,14 +127,24 @@ class Interface():
         if list_index >= len(self.mail_lists):
             return "A list with such an index doesn't exist"
 
-        if subscriber_index >= len(self.mail_lists[list_index]):
+        if subscriber_index >= len(self.mail_lists[list_index].people):
             return "A subscriber with such an index doesn't exist"
 
-        self.mail_lists[list_index].remove_person(subscriber_index + 1)
-        print("Subscriber deleted")
+        list_name = self.mail_lists[list_index].list_name
+        subscriber = self.mail_lists[list_index].people[subscriber_index].name
+        self.mail_lists[list_index].remove_person(subscriber_index)
+
+        delete_query = "delete from {0} where name = '{1}'".format(list_name, subscriber)
+        self.cursor.execute(delete_query)
+
+        return "Subscriber {0} deleted from {1}".format(subscriber, list_name)
 
     def create(self, list_name):
         self.mail_lists.append(maillist.MailList(list_name))
+
+        create_query = "create table {0}(name, email)".format(list_name)
+        self.cursor.execute(create_query)
+
         return "New list <{0}> was created!".format(list_name)
 
     def update(self, list_identifier, new_name):
@@ -128,12 +154,20 @@ class Interface():
 
         old_name = self.mail_lists[index].list_name
         self.mail_lists[index].list_name = new_name
+
+        update_query = "alter table {0} rename to {1}".format(old_name, new_name)
+        self.cursor.execute(update_query)
+
         return "The list {0} was renamed to {1}".format(old_name, new_name)
 
     def delete(self, list_identifier):
         index = int(list_identifier) - 1
         name = self.mail_lists[index].list_name
         del self.mail_lists[index]
+
+        delete_query  = "drop table {0}".format(name)
+        self.cursor.execute(delete_query)
+
         return "The list <{0}> was deleted!".format(name)
 
     def search_email(self, email):
@@ -165,7 +199,8 @@ class Interface():
         return "The list <{0}> was exported to json format".format(list_name)
 
     def import_(self, json_file_name):
-        maillist_ = maillist.MailList(json_file_name[:len(json_file_name) - 5])
+        list_name = json_file_name[:len(json_file_name) - 5]
+        maillist_ = maillist.MailList(list_name)
         file_ = open(json_file_name, "r")
         contents = file_.read()
         file_.close()

@@ -1,3 +1,4 @@
+# this class will be used for packeting list subscribers
 class Person():
     def __init__(self, name, email):
         self.name = name

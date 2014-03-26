@@ -1,35 +1,41 @@
 import interface
 import unittest
+import person
+import sqlite3
+from subprocess import call
 
 
 class InterfaceTests(unittest.TestCase):
 
     def setUp(self):
-        file_ = open("./lists/test_list", "w")
-        file_.write("person testoff:person@test.bug")
-        file_.close()
-        self.i = interface.Interface()
+        self.conn = sqlite3.connect("test_interface.db")
+        self.cursor = self.conn.cursor()
+        self.cursor.execute("create table test_interface(name, email)")
+        self.cursor.execute('''insert into test_interface(name, email)
+                                values('daniel taskoff', 'danko@abv.bg')''')
+        self.i = interface.Interface(self.cursor)
+
+    def test_interface_init(self):
+        self.assertEqual("test_interface", self.i.mail_lists[0].list_name)
+        self.assertEqual([person.Person("daniel taskoff", "danko@abv.bg")],
+            self.i.mail_lists[0].people)
 
     def test_show_lists(self):
-        self.assertEqual("[1] test_list", self.i.show_lists())
+        result = self.i.show_lists()
+        self.assertEqual("[1] test_interface", result)
 
     def test_show_list(self):
-        self.assertEqual("[1] person testoff - person@test.bug", self.i.show_list(1))
+        result = self.i.show_list(1)
+        self.assertEqual("[1] daniel taskoff - danko@abv.bg", result)
 
-    def test_show_list_with_index_out_of_range(self):
-        self.assertEqual("A list with such an index doesn't exist", self.i.show_list(2))
+    def test_show_unexisting_list(self):
+        result = self.i.show_list(2)
+        self.assertEqual("A list with such an index doesn't exist", result)
 
-    def test_create(slef):
-        pass
-
-    def test_search_email(slef):
-        pass
-
-    def test_merge_lists(self):
-        pass
-
-    def test_export(self):
-        pass
+    def tearDown(self):
+        self.cursor.execute("drop table 'test_interface'")
+        self.conn.close()
+        call("rm -r test_interface.db", shell=True)
 
 
 if __name__ == '__main__':
