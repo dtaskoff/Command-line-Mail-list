@@ -23,7 +23,8 @@ def main():
         'update': main_interface.update,
         'update_subscriber': main_interface.update_subscriber,
         'remove_subscriber': main_interface.remove_subscriber,
-        'merge_lists': main_interface.merge_lists
+        'merge_lists': main_interface.merge_lists,
+        'error': main_interface.error
         }
     command_parser = commandparser.CommandParser(commands)
 
@@ -34,12 +35,10 @@ def main():
             continue
 
         command = commands.split()[0]
-        arguments = commands.split()[1:] or []
+        arguments = commands.split()[1:]
 
-        try:
-            print(command_parser.parse(command, arguments))
-        except TypeError:
-            print(main_interface.error())
+        print(command_parser.parse(command, arguments))
+        conn.commit()
 
 
 if __name__ == '__main__':
