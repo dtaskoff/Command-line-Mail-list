@@ -12,12 +12,12 @@ class InterfaceTests(unittest.TestCase):
         self.cursor = self.conn.cursor()
         self.cursor.execute("create table test_interface(name, email)")
         self.cursor.execute('''insert into test_interface(name, email)
-                                values('daniel taskoff', 'danko@abv.bg')''')
+                                values('my name', 'mymail@abv.bg')''')
         self.i = interface.Interface(self.cursor)
 
     def test_interface_init(self):
         self.assertEqual("test_interface", self.i.mail_lists[0].list_name)
-        self.assertEqual([person.Person("daniel taskoff", "danko@abv.bg")],
+        self.assertEqual([person.Person("my name", "mymail@abv.bg")],
             self.i.mail_lists[0].people)
 
     def test_show_lists(self):
@@ -26,7 +26,7 @@ class InterfaceTests(unittest.TestCase):
 
     def test_show_list(self):
         result = self.i.show_list(1)
-        self.assertEqual("[1] daniel taskoff - danko@abv.bg", result)
+        self.assertEqual("[1] my name - mymail@abv.bg", result)
 
     def test_show_unexisting_list(self):
         result = self.i.show_list(2)
